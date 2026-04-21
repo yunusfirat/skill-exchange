@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SkillSwap — Learn & Teach Skills Together
 
-## Getting Started
+SkillSwap is an open‑source skill‑exchange platform where people can **teach what they know** and **learn what they want**.  
+Built with **Next.js, Supabase, and TailwindCSS**, it provides a clean, modern, Apple‑inspired UI and a simple matching system based on skills, languages, and availability.
 
-First, run the development server:
+---
+
+## 🚀 Features
+
+### 👤 User Profiles
+- Upload avatar (Supabase Storage)
+- Full name, username, location, timezone
+- Skills Offered (multi‑select)
+- Skills Wanted (multi‑select)
+- Languages spoken
+- Experience level
+- Availability
+- Clean Apple‑style UI
+
+### 🔍 Explore Page
+- Browse other users
+- Filter by skills, languages, and experience
+- Matching score (basic version)
+- Modern card layout
+
+### 🤝 Matching System
+- Simple algorithm comparing:
+  - Skills you want ↔ skills others offer
+  - Language compatibility
+  - Availability overlap
+
+### 💬 Chat (coming soon)
+- Real‑time messaging
+- User list + conversation view
+- Typing indicators (planned)
+- Online/offline status (planned)
+
+### 📊 Dashboard
+- Welcome card with avatar
+- Profile completion progress (planned)
+- Quick actions (planned)
+- Stats (planned)
+
+---
+
+## 🛠️ Tech Stack
+
+- **Next.js 14 (App Router)**
+- **Supabase Auth**
+- **Supabase Database**
+- **Supabase Storage**
+- **TailwindCSS**
+- **TypeScript**
+- **React Server Components**
+- **ShadCN (optional)**
+
+---
+
+## 📦 Installation
+
+Clone the repository:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+git clone https://github.com/yourusername/skillswap.git
+cd skillswap
