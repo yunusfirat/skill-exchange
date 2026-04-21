@@ -61,5 +61,5 @@ Built with **Next.js, Supabase, and TailwindCSS**, it provides a clean, modern, 
 Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/skillswap.git
-cd skillswap
+git clone https://github.com/yourusername/skill-exchange.git
+cd skill-exchange
