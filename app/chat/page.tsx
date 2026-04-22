@@ -135,6 +135,7 @@ export default function ChatListPage() {
                             New
                         </div>
                     )}
+                    
                 </div>
             ))}
         </div>

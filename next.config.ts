@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  env: {
+    DAILY_API_URL: process.env.DAILY_API_URL,
+  },
 };
 
 export default nextConfig;
