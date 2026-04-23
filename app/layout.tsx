@@ -54,6 +54,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <Link href="/profile" className="hover:text-blue-600">
                 Profile
               </Link>
+               <Link href="/appointments" className="hover:text-blue-600">
+                Appointments
+              </Link>
 
               <button
                 onClick={handleLogout}
