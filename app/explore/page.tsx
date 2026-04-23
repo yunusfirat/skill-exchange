@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
-import { MatchResult, SkillRequest, UserProfile } from "../types/explore";
+import { MatchResult, SkillRequest } from "../types/explore";
 import UserCard from "../components/UserCard";
 
 export default function ExplorePage() {
@@ -79,7 +79,7 @@ export default function ExplorePage() {
                         .select()
                         .single();
 
-                    profile = newProfile as UserProfile;
+                    profile = newProfile
                 }
 
                 finalMatches.push({

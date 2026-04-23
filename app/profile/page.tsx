@@ -2,6 +2,7 @@
 
 import { useEffect, useState, ChangeEvent } from "react"
 import { supabase } from "../../lib/supabaseClient"
+import LocationMap from "../components/LocationMap"
 
 // ---------------------------------------------
 // PREDEFINED SKILL LISTS (GLOBAL STANDARD)
@@ -79,6 +80,10 @@ type Profile = {
   experience_level: string | null
   availability: string | null
   languages: string[] | null
+  city: string | null
+  country: string | null
+  lat: number | null
+  lng: number | null
 }
 
 // ---------------------------------------------
@@ -110,6 +115,17 @@ export default function ProfilePage() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [avatarUploading, setAvatarUploading] = useState(false)
 
+  const [city, setCity] = useState("")
+  const [country, setCountry] = useState("")
+  const [coords, setCoords] = useState<{ lat: number | null; lng: number | null }>({
+    lat: null,
+    lng: null,
+  })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [authUser, setAuthUser] = useState<any>(null)
+
+
+
   // ---------------------------------------------
   // LOAD PROFILE
   // ---------------------------------------------
@@ -118,6 +134,8 @@ export default function ProfilePage() {
     const loadProfile = async () => {
       const { data: authData } = await supabase.auth.getUser()
       if (!authData.user) return
+
+      setAuthUser(authData.user)
 
       const { data } = await supabase
         .from("users")
@@ -140,13 +158,20 @@ export default function ProfilePage() {
         setSkillsWanted(p.skills_wanted || [])
         setLanguages(p.languages || [])
         setAvatarUrl(p.avatar_url || null)
+        setCity(p.city || "")
+        setCountry(p.country || "")
+        setCoords({
+          lat: p.lat || null,
+          lng: p.lng || null,
+        })
       }
-
       setLoading(false)
     }
 
     loadProfile()
   }, [])
+
+
 
   // ---------------------------------------------
   // VALIDATION
@@ -342,6 +367,18 @@ export default function ProfilePage() {
                 </span>
               ))}
             </div>
+
+            {coords.lat && coords.lng && (
+              <div className="mt-6">
+                <h2 className="text-xl font-semibold mb-3">Your Location:</h2>
+                {city || country ? `${city}${city && country ? ", " : ""}${country}` : "Not set"}
+
+                <div className="mt-3 w-full max-w-sm h-40 rounded-xl overflow-hidden border shadow-sm">
+                  <LocationMap lat={coords.lat} lng={coords.lng} />
+                </div>
+              </div>
+            )}
+
           </div>
 
           {/* UPDATE BUTTON */}
@@ -575,6 +612,71 @@ export default function ProfilePage() {
             </div>
           </div>
 
+
+
+          <div className="space-y-4 mt-6">
+            <h3 className="text-lg font-semibold">Location</h3>
+
+            {/* Use My Location */}
+            <button
+              onClick={() => {
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                  const { latitude, longitude } = pos.coords;
+
+                  await supabase
+                    .from("users")
+                    .update({
+                      lat: latitude,
+                      lng: longitude,
+                    })
+                    .eq("id", authUser.id);
+
+                  alert("Location updated successfully");
+                });
+              }}
+              className="px-4 py-2 bg-black text-white rounded-md"
+            >
+              Use My Location
+            </button>
+
+            {coords.lat && coords.lng && (
+              <LocationMap lat={coords.lat} lng={coords.lng} />
+            )}
+            {/* Manual City Selection */}
+            <div className="flex flex-col space-y-2">
+              <label className="text-sm font-medium">City</label>
+              <select
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="border rounded-md px-3 py-2"
+              >
+                <option value="">Select a city</option>
+                <option value="London">London</option>
+                <option value="Manchester">Manchester</option>
+                <option value="Berlin">Berlin</option>
+                <option value="Istanbul">Istanbul</option>
+                <option value="New York">New York</option>
+                <option value="Toronto">Toronto</option>
+              </select>
+            </div>
+
+            <button
+              onClick={async () => {
+                await supabase
+                  .from("users")
+                  .update({
+                    city,
+                    country: "United Kingdom",
+                  })
+                  .eq("id", authUser.id)
+
+                alert("City updated successfully")
+              }}
+              className="px-4 py-2 bg-black text-white rounded-md"
+            >
+              Save City
+            </button>
+          </div>
           {/* ACTION BUTTONS */}
           <div className="flex justify-end gap-4">
             <button

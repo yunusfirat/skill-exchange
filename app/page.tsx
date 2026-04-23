@@ -10,7 +10,7 @@ export default function LandingPage() {
 
       {/* NAVBAR */}
       <nav className="w-full flex justify-between items-center py-4 px-6 border-b">
-        <div className="text-xl font-bold">SkillSwap</div>
+        <div className="text-xl font-bold">SkillExchange</div>
 
         <div className="flex items-center gap-4">
           <button
@@ -36,7 +36,7 @@ export default function LandingPage() {
         </h1>
 
         <p className="text-lg text-gray-600 max-w-xl mx-auto mb-6">
-          SkillSwap is a global platform where people teach what they know and learn what they don’t.
+          SkillExchange is a global platform where people teach what they know and learn what they don’t.
           No payments, no barriers — just pure knowledge exchange.
         </p>
 
@@ -104,7 +104,7 @@ export default function LandingPage() {
 
       {/* FOOTER */}
       <footer className="py-10 text-center text-gray-600">
-        <p>© 2026 SkillSwap. All rights reserved.</p>
+        <p>© 2026 SkillExchange. All rights reserved.</p>
       </footer>
 
     </div>

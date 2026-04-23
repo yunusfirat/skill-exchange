@@ -5,6 +5,8 @@ import Link from "next/link"
 import { ReactNode } from "react"
 import { usePathname } from "next/navigation"
 import { supabase } from "../lib/supabaseClient"
+import "mapbox-gl/dist/mapbox-gl.css"
+
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
@@ -23,7 +25,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body className="bg-gray-50">
 
-        {/* 🔥 NAVBAR (sadece gerekli sayfalarda) */}
         {shouldShowNavbar && (
           <nav className="flex items-center justify-between p-4 border-b bg-white">
             <Link href="/" className="font-bold text-xl">
@@ -35,7 +36,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               <Link href="/explore" className="hover:text-blue-600">
                 Explore
               </Link>
-
+              <Link href="/explore-location" className="hover:text-blue-600">
+                Explore by Location
+              </Link>
               <Link href="/dashboard" className="hover:text-blue-600">
                 Dashboard
               </Link>

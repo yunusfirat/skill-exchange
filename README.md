@@ -1,6 +1,6 @@
-# SkillSwap — Learn & Teach Skills Together
+# SkillExchange — Learn & Teach Skills Together
 
-SkillSwap is an open‑source skill‑exchange platform where people can **teach what they know** and **learn what they want**.  
+SkillExchange is an open‑source skill‑exchange platform where people can **teach what they know** and **learn what they want**.  
 Built with **Next.js, Supabase, and TailwindCSS**, it provides a clean, modern, Apple‑inspired UI and a simple matching system based on skills, languages, and availability.
 
 ---
