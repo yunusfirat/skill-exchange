@@ -6,6 +6,7 @@ import { ReactNode } from "react"
 import { usePathname } from "next/navigation"
 import { supabase } from "../lib/supabaseClient"
 import "mapbox-gl/dist/mapbox-gl.css"
+import ProfileBootstrap from "./ProfileBootstrap"
 
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -15,8 +16,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     await supabase.auth.signOut()
     window.location.href = "/"
   }
-
-  // ❌ Navbar görünmeyecek sayfalar
+  // Hide navbar on these routes (e.g. login/signup)
   const hideNavbarOn = ["/", "/login", "/signup"]
 
   const shouldShowNavbar = !hideNavbarOn.includes(pathname)
@@ -34,10 +34,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <div className="flex gap-6 items-center text-sm font-medium">
 
               <Link href="/explore" className="hover:text-blue-600">
-                Explore by Distance
-              </Link>
-              <Link href="/explore-location" className="hover:text-blue-600">
-                Explore by Location
+                Explore
               </Link>
               <Link href="/dashboard" className="hover:text-blue-600">
                 Dashboard
@@ -69,6 +66,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         )}
 
         <main className="p-4">
+              <ProfileBootstrap />
           {children}
         </main>
 

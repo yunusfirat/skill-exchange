@@ -23,29 +23,7 @@ export default function SignupPage() {
       setError(error.message)
       return
     }
-
-    const user = data.user
-
-    if (user) {
-      await supabase.from("users").insert({
-        id: user.id,
-        full_name: "",
-        bio: "",
-        avatar_url: "",
-        username: "",
-        location: "",
-        timezone: "",
-        experience_level: [],
-        availability: [],
-        languages: [],
-        city: "",
-        country: "",
-        lat: null,
-        lng: null,
-      })
-    }
-
-    // ✔ Signup başarılı → login sayfasına yönlendir
+    // No need to create profile here, ProfileBootstrap will handle it on first load
     router.push("/login")
   }
 

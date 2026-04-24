@@ -123,6 +123,7 @@ export default function ProfilePage() {
     lat: null,
     lng: null,
   })
+  console.log("PROFILE PAGE RENDER");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [authUser, setAuthUser] = useState<any>(null)
 
@@ -141,47 +142,49 @@ export default function ProfilePage() {
   // LOAD PROFILE
   // ---------------------------------------------
 
-  useEffect(() => {
-    const loadProfile = async () => {
-      const { data: authData } = await supabase.auth.getUser()
-      if (!authData.user) return
+ useEffect(() => {
+  const loadProfile = async () => {
+    const { data: authData } = await supabase.auth.getUser()
+    if (!authData.user) return
 
-      setAuthUser(authData.user)
+    setAuthUser(authData.user)
 
-      const { data } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", authData.user.id)
-        .single()
+    const { data } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", authData.user.id)
+      .maybeSingle()
 
-      if (data) {
-        const p = data as Profile
-        setProfile(p)
-
-        setFullName(p.full_name || "")
-        setUsername(p.username || "")
-        setLocation(p.location || "")
-        setTimezone(p.timezone || "")
-        setBio(p.bio || "")
-        setExperienceLevel(normalizeArray(p.experience_level));
-        setAvailability(normalizeArray(p.availability));
-        setLanguages(normalizeArray(p.languages));
-        setSkillsOffered(normalizeArray(p.skills_offered));
-        setSkillsWanted(normalizeArray(p.skills_wanted));
-        setLanguages(p.languages || [])
-        setAvatarUrl(p.avatar_url || null)
-        setCity(p.city || "")
-        setCountry(p.country || "")
-        setCoords({
-          lat: p.lat || null,
-          lng: p.lng || null,
-        })
-      }
+    if (!data) {
+      setProfile(null)
       setLoading(false)
+      return
     }
 
-    loadProfile()
-  }, [])
+    const p = data as Profile
+    setProfile(p)
+
+    setFullName(p.full_name || "")
+    setUsername(p.username || "")
+    setLocation(p.location || "")
+    setTimezone(p.timezone || "")
+    setBio(p.bio || "")
+    setExperienceLevel(normalizeArray(p.experience_level))
+    setAvailability(normalizeArray(p.availability))
+    setLanguages(normalizeArray(p.languages))
+    setSkillsOffered(normalizeArray(p.skills_offered))
+    setSkillsWanted(normalizeArray(p.skills_wanted))
+    setAvatarUrl(p.avatar_url || null)
+    setCity(p.city || "")
+    setCountry(p.country || "")
+    setCoords({ lat: p.lat, lng: p.lng })
+
+    setLoading(false)
+  }
+
+  loadProfile()
+}, [])
+
 
 
 
@@ -296,6 +299,12 @@ export default function ProfilePage() {
     languages.length
 
   if (loading) return <p className="p-10">Loading...</p>
+
+if (!profile) return (
+  <div className="p-10">
+    <p>No profile found yet. Please refresh.</p>
+  </div>
+)
 
   // ---------------------------------------------
   // UI STARTS HERE
