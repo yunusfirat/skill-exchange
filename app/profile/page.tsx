@@ -3,6 +3,7 @@
 import { useEffect, useState, ChangeEvent } from "react"
 import { supabase } from "../../lib/supabaseClient"
 import LocationMap from "../components/LocationMap"
+import Image from "next/image";
 
 // ---------------------------------------------
 // PREDEFINED SKILL LISTS (GLOBAL STANDARD)
@@ -105,12 +106,13 @@ export default function ProfilePage() {
   const [location, setLocation] = useState("")
   const [timezone, setTimezone] = useState("")
   const [bio, setBio] = useState("")
-  const [experienceLevel, setExperienceLevel] = useState("")
-  const [availability, setAvailability] = useState("")
+  const [experienceLevel, setExperienceLevel] = useState<string[]>([])
+  const [availability, setAvailability] = useState<string[]>([])
+  const [languages, setLanguages] = useState<string[]>([])
 
   const [skillsOffered, setSkillsOffered] = useState<string[]>([])
   const [skillsWanted, setSkillsWanted] = useState<string[]>([])
-  const [languages, setLanguages] = useState<string[]>([])
+
 
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [avatarUploading, setAvatarUploading] = useState(false)
@@ -124,7 +126,16 @@ export default function ProfilePage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [authUser, setAuthUser] = useState<any>(null)
 
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const normalizeArray = (val: any): string[] => {
+    if (!val) return [];
+    if (Array.isArray(val)) return val;
+    if (typeof val === "string") {
+      if (val.trim() === "" || val.trim() === "{}") return [];
+      return [val];
+    }
+    return [];
+  };
 
   // ---------------------------------------------
   // LOAD PROFILE
@@ -152,10 +163,11 @@ export default function ProfilePage() {
         setLocation(p.location || "")
         setTimezone(p.timezone || "")
         setBio(p.bio || "")
-        setExperienceLevel(p.experience_level || "")
-        setAvailability(p.availability || "")
-        setSkillsOffered(p.skills_offered || [])
-        setSkillsWanted(p.skills_wanted || [])
+        setExperienceLevel(normalizeArray(p.experience_level));
+        setAvailability(normalizeArray(p.availability));
+        setLanguages(normalizeArray(p.languages));
+        setSkillsOffered(normalizeArray(p.skills_offered));
+        setSkillsWanted(normalizeArray(p.skills_wanted));
         setLanguages(p.languages || [])
         setAvatarUrl(p.avatar_url || null)
         setCity(p.city || "")
@@ -188,7 +200,8 @@ export default function ProfilePage() {
     if (!skillsOffered.length) errs.push("At least one offered skill is required.")
     if (!skillsWanted.length) errs.push("At least one wanted skill is required.")
     if (!languages.length) errs.push("At least one language is required.")
-    if (!experienceLevel.trim()) errs.push("Experience level is required.")
+    if (experienceLevel.length === 0) errs.push("Experience level is required.")
+    if (availability.length === 0) errs.push("Availability is required.")
 
     setErrors(errs)
     return errs.length === 0
@@ -337,35 +350,96 @@ export default function ProfilePage() {
 
           {/* DETAILS */}
           <div className="bg-white shadow rounded-xl p-6 space-y-4">
-            <p><strong>Bio:</strong> {bio}</p>
-            <p><strong>Experience Level:</strong> {experienceLevel}</p>
-            <p><strong>Availability:</strong> {availability}</p>
+            <p><strong>Bio:</strong></p>
+            <div className="mt-1">
+              {bio && bio.trim().length > 0 ? (
+                <span>{bio}</span>
+              ) : (
+                <span className="text-gray-500 text-sm">Not set</span>
+              )}
+            </div>
+
+
+            <p><strong>Experience Level:</strong></p>
+            <div className="flex flex-wrap gap-2">
+              {experienceLevel.length > 0 ? (
+                experienceLevel.map((lvl) => (
+                  <span
+                    key={lvl}
+                    className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs"
+                  >
+                    {lvl}
+                  </span>
+                ))
+              ) : (
+                <span className="text-gray-500 text-sm">Not set</span>
+              )}
+            </div>
+
+            <p><strong>Availability:</strong></p>
+            <div className="flex flex-wrap gap-2">
+              {availability.length > 0 ? (
+                availability.map((a) => (
+                  <span
+                    key={a}
+                    className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs"
+                  >
+                    {a}
+                  </span>
+                ))
+              ) : (
+                <span className="text-gray-500 text-sm">Not set</span>
+              )}
+            </div>
+
+
 
             <p><strong>Skills Offered:</strong></p>
             <div className="flex flex-wrap gap-2">
-              {skillsOffered.map((s) => (
-                <span key={s} className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs">
-                  {s}
-                </span>
-              ))}
+              {skillsOffered.length > 0 ? (
+                skillsOffered.map((s) => (
+                  <span
+                    key={s}
+                    className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs"
+                  >
+                    {s}
+                  </span>
+                ))
+              ) : (
+                <span className="text-gray-500 text-sm">Not set</span>
+              )}
             </div>
 
             <p><strong>Skills Wanted:</strong></p>
             <div className="flex flex-wrap gap-2">
-              {skillsWanted.map((s) => (
-                <span key={s} className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
-                  {s}
-                </span>
-              ))}
+              {skillsWanted.length > 0 ? (
+                skillsWanted.map((s) => (
+                  <span
+                    key={s}
+                    className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs"
+                  >
+                    {s}
+                  </span>
+                ))
+              ) : (
+                <span className="text-gray-500 text-sm">Not set</span>
+              )}
             </div>
 
             <p><strong>Languages:</strong></p>
             <div className="flex flex-wrap gap-2">
-              {languages.map((l) => (
-                <span key={l} className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs">
-                  {l}
-                </span>
-              ))}
+              {languages.length > 0 ? (
+                languages.map((l) => (
+                  <span
+                    key={l}
+                    className="bg-purple-100 text-purple-700 px-2 py-1 rounded-full text-xs"
+                  >
+                    {l}
+                  </span>
+                ))
+              ) : (
+                <span className="text-gray-500 text-sm">Not set</span>
+              )}
             </div>
 
             {coords.lat && coords.lng && (
@@ -402,11 +476,15 @@ export default function ProfilePage() {
               {/* Avatar */}
               <div className="w-28 h-28 rounded-full overflow-hidden shadow-sm border border-gray-200 bg-gray-100">
                 {avatarUrl ? (
-                  <img
-                    src={avatarUrl}
-                    alt="Avatar"
-                    className="w-full h-full object-cover"
-                  />
+                  <div className="w-full h-full relative">
+                    <Image
+                      src={avatarUrl}
+                      alt="Avatar"
+                      fill
+                      sizes="100px"
+                      className="object-cover rounded-full"
+                    />
+                  </div>
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
                     No Photo
@@ -567,37 +645,31 @@ export default function ProfilePage() {
 
             {/* EXPERIENCE + AVAILABILITY */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Experience Level</label>
-                <select
-                  className="w-full border rounded-lg px-3 py-2 text-sm"
-                  value={experienceLevel}
-                  onChange={(e) => setExperienceLevel(e.target.value)}
-                >
-                  <option value="">Select level</option>
-                  {experienceLevels.map((lvl) => (
-                    <option key={lvl} value={lvl}>
-                      {lvl}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <select
+                className="w-full border rounded-lg px-3 py-2 text-sm"
+                value={experienceLevel[0] || ""}
+                onChange={(e) => setExperienceLevel([e.target.value])}
+              >
+                <option value="">Select level</option>
+                {experienceLevels.map((lvl) => (
+                  <option key={lvl} value={lvl}>
+                    {lvl}
+                  </option>
+                ))}
+              </select>
+              <select
+                className="w-full border rounded-lg px-3 py-2 text-sm"
+                value={availability[0] || ""}
+                onChange={(e) => setAvailability([e.target.value])}
+              >
+                <option value="">Select availability</option>
+                {availabilityOptions.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">Availability</label>
-                <select
-                  className="w-full border rounded-lg px-3 py-2 text-sm"
-                  value={availability}
-                  onChange={(e) => setAvailability(e.target.value)}
-                >
-                  <option value="">Select availability</option>
-                  {availabilityOptions.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </select>
-              </div>
             </div>
 
             {/* BIO */}
@@ -643,7 +715,7 @@ export default function ProfilePage() {
               <LocationMap lat={coords.lat} lng={coords.lng} />
             )}
             {/* Manual City Selection */}
-            <div className="flex flex-col space-y-2">
+            {/* <div className="flex flex-col space-y-2">
               <label className="text-sm font-medium">City</label>
               <select
                 value={city}
@@ -658,9 +730,9 @@ export default function ProfilePage() {
                 <option value="New York">New York</option>
                 <option value="Toronto">Toronto</option>
               </select>
-            </div>
+            </div> */}
 
-            <button
+            {/* <button
               onClick={async () => {
                 await supabase
                   .from("users")
@@ -675,7 +747,7 @@ export default function ProfilePage() {
               className="px-4 py-2 bg-black text-white rounded-md"
             >
               Save City
-            </button>
+            </button> */}
           </div>
           {/* ACTION BUTTONS */}
           <div className="flex justify-end gap-4">

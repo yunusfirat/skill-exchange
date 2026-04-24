@@ -60,6 +60,7 @@ export default function UserCard({ match }: UserCardProps) {
               src={match.avatar_url}
               alt={match.full_name}
               fill
+              sizes="64px"
               className="object-cover"
             />
           </div>

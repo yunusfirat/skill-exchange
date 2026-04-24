@@ -185,7 +185,8 @@ export default function AppointmentsPage() {
                                 width={48}
                                 height={48}
                                 className="rounded-full"
-                                alt=""
+                                alt="avatar"
+                                sizes="64px"
                             />
 
                             <div className="flex-1">
@@ -231,7 +232,8 @@ export default function AppointmentsPage() {
                                 width={48}
                                 height={48}
                                 className="rounded-full"
-                                alt=""
+                                alt="avatar"
+                                sizes="64px"
                             />
                             <div className="flex-1">
                                 <p className="font-medium">{other.full_name}</p>
@@ -271,7 +273,8 @@ export default function AppointmentsPage() {
                             width={48}
                             height={48}
                             className="rounded-full"
-                            alt=""
+                            alt="avatar"
+                            sizes="64px"
                         />
                         <p className="font-medium">{u.full_name}</p>
                     </div>

@@ -77,9 +77,9 @@ export default function ExplorePage() {
                             username: "",
                             location: "",
                             timezone: "",
-                            experience_level: "",
-                            availability: "",
-                            languages: "",
+                            experience_level: [],
+                            availability: [],
+                            languages: [],
                             city: "",
                             country: "",
                             lat: null,
@@ -104,18 +104,19 @@ export default function ExplorePage() {
             }
 
             console.log("myTeach/myLearn:", myTeach, myLearn);
-console.log("others count:", others?.length);
+            console.log("others count:", others?.length);
 
-console.log(
-  "MATCH DEBUG",
-  others?.map((req: any) => ({
-    id: req.id,
-    user_id: req.user_id,
-    theirTeach: req.skills_offered.trim().toLowerCase(),
-    theirLearn: req.skills_wanted.trim().toLowerCase(),
-  }))
-);
-console.log("finalMatches:", finalMatches.length);
+            console.log(
+                "MATCH DEBUG",
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                others?.map((req: any) => ({
+                    id: req.id,
+                    user_id: req.user_id,
+                    theirTeach: req.skills_offered.trim().toLowerCase(),
+                    theirLearn: req.skills_wanted.trim().toLowerCase(),
+                }))
+            );
+            console.log("finalMatches:", finalMatches.length);
 
             setMatches(finalMatches);
             setLoading(false);

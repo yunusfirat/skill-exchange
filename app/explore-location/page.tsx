@@ -22,8 +22,8 @@ export default function ExploreByLocationPage() {
         const a =
             Math.sin(dLat / 2) ** 2 +
             Math.cos(lat1 * Math.PI / 180) *
-                Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLon / 2) ** 2;
+            Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) ** 2;
 
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     };
@@ -43,7 +43,6 @@ export default function ExploreByLocationPage() {
                 .eq("id", user.id)
                 .maybeSingle();
 
-            // ❗ Profil yoksa → oluştur
             if (!myProfile) {
                 const { data: newProfile } = await supabase
                     .from("users")
@@ -55,9 +54,9 @@ export default function ExploreByLocationPage() {
                         username: "",
                         location: "",
                         timezone: "",
-                        experience_level: "",
-                        availability: "",
-                        languages: "",
+                        experience_level: [],
+                        availability: [],
+                        languages: [],
                         city: "",
                         country: "",
                         lat: null,
@@ -137,9 +136,9 @@ export default function ExploreByLocationPage() {
                             username: "",
                             location: "",
                             timezone: "",
-                            experience_level: "",
-                            availability: "",
-                            languages: "",
+                            experience_level: [],
+                            availability: [],
+                            languages: [],
                             city: "",
                             country: "",
                             lat: null,
@@ -189,9 +188,10 @@ export default function ExploreByLocationPage() {
 
             {/* Distance Slider */}
             <div className="mb-6">
-                <label className="text-sm font-medium">
+                <label className="text-sm font-medium block mb-2">
                     Distance: {distance} km
                 </label>
+
                 <input
                     type="range"
                     min={5}
@@ -199,10 +199,17 @@ export default function ExploreByLocationPage() {
                     step={5}
                     value={distance}
                     onChange={(e) => setDistance(Number(e.target.value))}
-                    className="w-full"
+                    className="
+                    w-full
+                    h-2
+                    bg-gray-200
+                    rounded-lg
+                    appearance-none
+                    cursor-pointer
+                    accent-blue-600
+                    "
                 />
             </div>
-
             {matches.length === 0 ? (
                 <div>No matching users found within {distance} km.</div>
             ) : (

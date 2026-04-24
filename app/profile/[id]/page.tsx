@@ -55,6 +55,7 @@ export default function ProfileDetail() {
                             alt={user.full_name}
                             fill
                             className="object-cover"
+                            sizes="64px"
                         />
                     ) : (
                         <div className="w-full h-full flex items-center justify-center text-3xl font-bold text-gray-500">

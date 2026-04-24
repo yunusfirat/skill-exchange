@@ -117,6 +117,7 @@ export default function ChatListPage() {
                         alt="avatar"
                         width={48}
                         height={48}
+                        sizes="64px"
                         className="w-12 h-12 rounded-full border object-cover"
                     />
 
