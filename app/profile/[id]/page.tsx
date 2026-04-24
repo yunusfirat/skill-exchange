@@ -5,7 +5,6 @@ import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { supabase } from "../../../lib/supabaseClient"
 import Image from "next/image"
-import Link from "next/link"
 import { getOrCreateConversation } from "@/lib/getOrCreateConversation";
 import LocationMap from "../../components/LocationMap" // mini map component
 

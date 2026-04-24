@@ -78,14 +78,16 @@ type Profile = {
   timezone: string | null
   skills_offered: string[] | null
   skills_wanted: string[] | null
-  experience_level: string | null
-  availability: string | null
+  experience_level: string[] | null
+  availability: string[] | null
   languages: string[] | null
   city: string | null
   country: string | null
   lat: number | null
   lng: number | null
+  mode: string | null
 }
+
 
 // ---------------------------------------------
 // COMPONENT
@@ -99,6 +101,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [errors, setErrors] = useState<string[]>([])
   const [message, setMessage] = useState<string | null>(null)
+  const [mode, setMode] = useState<string>("online")
 
   // FORM FIELDS
   const [fullName, setFullName] = useState("")
@@ -142,48 +145,61 @@ export default function ProfilePage() {
   // LOAD PROFILE
   // ---------------------------------------------
 
- useEffect(() => {
-  const loadProfile = async () => {
-    const { data: authData } = await supabase.auth.getUser()
-    if (!authData.user) return
+  useEffect(() => {
+    const loadProfile = async () => {
+      const { data: authData } = await supabase.auth.getUser()
+      if (!authData.user) return
 
-    setAuthUser(authData.user)
+      setAuthUser(authData.user)
 
-    const { data } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", authData.user.id)
-      .maybeSingle()
+      const { data } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", authData.user.id)
+        .maybeSingle()
 
-    if (!data) {
-      setProfile(null)
+      if (!data) {
+        setProfile(null)
+        setLoading(false)
+        return
+      }
+
+      const p = data as Profile
+      setProfile(p)
+
+      setFullName(p.full_name || "")
+      setUsername(p.username || "")
+      setLocation(p.location || "")
+      setTimezone(p.timezone || "")
+      setBio(p.bio || "")
+      setExperienceLevel(
+        Array.isArray(p.experience_level)
+          ? p.experience_level
+          : p.experience_level
+            ? [p.experience_level]
+            : []
+      )
+
+      setAvailability(
+        Array.isArray(p.availability)
+          ? p.availability
+          : p.availability
+            ? [p.availability]
+            : []
+      )
+      setLanguages(p.languages || [])
+      setSkillsOffered(normalizeArray(p.skills_offered))
+      setSkillsWanted(normalizeArray(p.skills_wanted))
+      setAvatarUrl(p.avatar_url || null)
+      setCity(p.city || "")
+      setCountry(p.country || "")
+      setCoords({ lat: p.lat, lng: p.lng })
+      setMode(p.mode || "online")
       setLoading(false)
-      return
     }
 
-    const p = data as Profile
-    setProfile(p)
-
-    setFullName(p.full_name || "")
-    setUsername(p.username || "")
-    setLocation(p.location || "")
-    setTimezone(p.timezone || "")
-    setBio(p.bio || "")
-    setExperienceLevel(normalizeArray(p.experience_level))
-    setAvailability(normalizeArray(p.availability))
-    setLanguages(normalizeArray(p.languages))
-    setSkillsOffered(normalizeArray(p.skills_offered))
-    setSkillsWanted(normalizeArray(p.skills_wanted))
-    setAvatarUrl(p.avatar_url || null)
-    setCity(p.city || "")
-    setCountry(p.country || "")
-    setCoords({ lat: p.lat, lng: p.lng })
-
-    setLoading(false)
-  }
-
-  loadProfile()
-}, [])
+    loadProfile()
+  }, [])
 
 
 
@@ -234,6 +250,7 @@ export default function ProfilePage() {
         skills_offered: skillsOffered,
         skills_wanted: skillsWanted,
         languages,
+        mode
       })
       .eq("id", profile.id)
 
@@ -300,11 +317,11 @@ export default function ProfilePage() {
 
   if (loading) return <p className="p-10">Loading...</p>
 
-if (!profile) return (
-  <div className="p-10">
-    <p>No profile found yet. Please refresh.</p>
-  </div>
-)
+  if (!profile) return (
+    <div className="p-10">
+      <p>No profile found yet. Please refresh.</p>
+    </div>
+  )
 
   // ---------------------------------------------
   // UI STARTS HERE
@@ -368,38 +385,66 @@ if (!profile) return (
               )}
             </div>
 
-
-            <p><strong>Experience Level:</strong></p>
-            <div className="flex flex-wrap gap-2">
-              {experienceLevel.length > 0 ? (
-                experienceLevel.map((lvl) => (
+            {/* MODE */}
+            <div>
+              <p className="font-semibold">Mode:</p>
+              <div className="mt-1">
+                {mode ? (
                   <span
-                    key={lvl}
-                    className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs"
+                    className="inline-block px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-700 capitalize"
                   >
-                    {lvl}
+                    {mode === "online" && "Online"}
+                    {mode === "inperson" && "In‑person"}
+                    {mode === "both" && "Online + In‑person"}
                   </span>
-                ))
-              ) : (
-                <span className="text-gray-500 text-sm">Not set</span>
-              )}
+                ) : (
+                  <span className="text-gray-500 text-sm">Not set</span>
+                )}
+              </div>
             </div>
 
-            <p><strong>Availability:</strong></p>
-            <div className="flex flex-wrap gap-2">
-              {availability.length > 0 ? (
-                availability.map((a) => (
-                  <span
-                    key={a}
-                    className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs"
-                  >
-                    {a}
-                  </span>
-                ))
-              ) : (
-                <span className="text-gray-500 text-sm">Not set</span>
-              )}
+
+
+
+            {/* EXPERIENCE LEVEL */}
+            <div>
+              <p className="font-semibold">Experience Level:</p>
+              <div className="mt-1 flex flex-wrap gap-2">
+                {Array.isArray(experienceLevel) && experienceLevel.length > 0 ? (
+                  experienceLevel.map((lvl) => (
+                    <span
+                      key={lvl}
+                      className="inline-block px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-700"
+                    >
+                      {lvl}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-gray-500 text-sm">Not set</span>
+                )}
+              </div>
             </div>
+
+            {/* AVAILABILITY */}
+            <div>
+              <p className="font-semibold">Availability:</p>
+              <div className="mt-1 flex flex-wrap gap-2">
+                {Array.isArray(availability) && availability.length > 0 ? (
+                  availability.map((slot) => (
+                    <span
+                      key={slot}
+                      className="inline-block px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700"
+                    >
+                      {slot}
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-gray-500 text-sm">Not set</span>
+                )}
+              </div>
+            </div>
+
+
 
 
 
@@ -515,17 +560,17 @@ if (!profile) return (
               <label
                 htmlFor="avatarUpload"
                 className="
-        cursor-pointer 
-        px-4 py-2 
-        rounded-full 
-        text-sm 
-        font-medium 
-        bg-gray-100 
-        text-gray-700 
-        hover:bg-gray-200 
-        transition 
-        shadow-sm
-      "
+                cursor-pointer 
+                px-4 py-2 
+                rounded-full 
+                text-sm 
+                font-medium 
+                bg-gray-100 
+                text-gray-700 
+                hover:bg-gray-200 
+                transition 
+                shadow-sm
+              "
               >
                 {avatarUploading ? "Uploading…" : "Change Photo"}
               </label>
@@ -563,6 +608,31 @@ if (!profile) return (
               />
             </div>
           </div>
+
+          {/* MODE SELECTION */}
+          <div className="mt-6">
+            <label className="block text-sm font-medium mb-2">Mode</label>
+
+            <div className="flex gap-3">
+              {[
+                { key: "online", label: "Online" },
+                { key: "inperson", label: "In‑person" },
+                { key: "both", label: "Online + In‑person" },
+              ].map((opt) => (
+                <button
+                  key={opt.key}
+                  onClick={() => setMode(opt.key)}
+                  className={`px-4 py-2 rounded-full border text-sm transition ${mode === opt.key
+                    ? "bg-black text-white border-black"
+                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                    }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
 
 
           {/* SKILLS SECTION */}
@@ -723,40 +793,7 @@ if (!profile) return (
             {coords.lat && coords.lng && (
               <LocationMap lat={coords.lat} lng={coords.lng} />
             )}
-            {/* Manual City Selection */}
-            {/* <div className="flex flex-col space-y-2">
-              <label className="text-sm font-medium">City</label>
-              <select
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                className="border rounded-md px-3 py-2"
-              >
-                <option value="">Select a city</option>
-                <option value="London">London</option>
-                <option value="Manchester">Manchester</option>
-                <option value="Berlin">Berlin</option>
-                <option value="Istanbul">Istanbul</option>
-                <option value="New York">New York</option>
-                <option value="Toronto">Toronto</option>
-              </select>
-            </div> */}
 
-            {/* <button
-              onClick={async () => {
-                await supabase
-                  .from("users")
-                  .update({
-                    city,
-                    country: "United Kingdom",
-                  })
-                  .eq("id", authUser.id)
-
-                alert("City updated successfully")
-              }}
-              className="px-4 py-2 bg-black text-white rounded-md"
-            >
-              Save City
-            </button> */}
           </div>
           {/* ACTION BUTTONS */}
           <div className="flex justify-end gap-4">
