@@ -34,7 +34,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <div className="flex gap-6 items-center text-sm font-medium">
 
               <Link href="/explore" className="hover:text-blue-600">
-                Explore
+                Explore by Distance
               </Link>
               <Link href="/explore-location" className="hover:text-blue-600">
                 Explore by Location
