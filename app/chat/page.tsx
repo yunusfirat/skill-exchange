@@ -81,7 +81,6 @@ export default function ChatListPage() {
         run()
     }, [])
 
-    // Realtime listener — React 18 uyumlu
     useEffect(() => {
         const channel = supabase
             .channel("messages_changes")

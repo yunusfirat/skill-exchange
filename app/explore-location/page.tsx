@@ -37,13 +37,41 @@ export default function ExploreByLocationPage() {
             if (!user) return;
 
             // Load my location
-            const { data: myProfile } = await supabase
+            let { data: myProfile } = await supabase
                 .from("users")
-                .select("lat, lng")
+                .select("*")
                 .eq("id", user.id)
-                .single();
+                .maybeSingle();
 
-            if (!myProfile?.lat || !myProfile?.lng) {
+            // ❗ Profil yoksa → oluştur
+            if (!myProfile) {
+                const { data: newProfile } = await supabase
+                    .from("users")
+                    .insert({
+                        id: user.id,
+                        full_name: "",
+                        bio: "",
+                        avatar_url: "",
+                        username: "",
+                        location: "",
+                        timezone: "",
+                        experience_level: "",
+                        availability: "",
+                        languages: "",
+                        city: "",
+                        country: "",
+                        lat: null,
+                        lng: null,
+                        skills_offered: "",
+                        skills_wanted: "",
+                    })
+                    .select()
+                    .maybeSingle();
+
+                myProfile = newProfile;
+            }
+
+            if (myProfile.lat == null || myProfile.lng == null) {
                 setMatches([]);
                 setLoading(false);
                 return;
@@ -59,7 +87,7 @@ export default function ExploreByLocationPage() {
                 .eq("user_id", user.id)
                 .order("created_at", { ascending: false })
                 .limit(1)
-                .single();
+                .maybeSingle();
 
             if (!myReq) {
                 setMatches([]);
@@ -92,13 +120,39 @@ export default function ExploreByLocationPage() {
                 if (!isMatch) continue;
 
                 // Load profile with location
-                const { data: profile } = await supabase
+                let { data: profile } = await supabase
                     .from("users")
-                    .select("full_name, bio, avatar_url, lat, lng")
+                    .select("*")
                     .eq("id", req.user_id)
-                    .single();
+                    .maybeSingle();
 
-                if (!profile?.lat || !profile?.lng) continue;
+                if (!profile) {
+                    const { data: newProfile } = await supabase
+                        .from("users")
+                        .insert({
+                            id: req.user_id,
+                            full_name: "",
+                            bio: "",
+                            avatar_url: "",
+                            username: "",
+                            location: "",
+                            timezone: "",
+                            experience_level: "",
+                            availability: "",
+                            languages: "",
+                            city: "",
+                            country: "",
+                            lat: null,
+                            lng: null,
+                            skills_offered: "",
+                            skills_wanted: "",
+                        })
+                        .select()
+                        .maybeSingle();
+
+                    profile = newProfile;
+                }
+                if (profile.lat == null || profile.lng == null) continue;
 
                 const dist = calculateDistance(
                     myProfile.lat,

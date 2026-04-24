@@ -12,7 +12,7 @@ export default function SignupPage() {
   const [error, setError] = useState("")
 
   const handleSignup = async (e: any) => {
-  e.preventDefault()
+    e.preventDefault()
 
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -31,8 +31,17 @@ export default function SignupPage() {
         id: user.id,
         full_name: "",
         bio: "",
-        skills_offered: "",
-        skills_wanted: "",
+        avatar_url: "",
+        username: "",
+        location: "",
+        timezone: "",
+        experience_level: "",
+        availability: "",
+        languages: "",
+        city: "",
+        country: "",
+        lat: null,
+        lng: null,
       })
     }
 
@@ -40,45 +49,45 @@ export default function SignupPage() {
     router.push("/login")
   }
 
-return (
-  <div className="p-10 max-w-md mx-auto">
-    <h1 className="text-2xl font-bold mb-4">Sign Up</h1>
+  return (
+    <div className="p-10 max-w-md mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Sign Up</h1>
 
-    <form onSubmit={handleSignup} className="flex flex-col gap-4">
-      <input
-        type="email"
-        placeholder="Email"
-        className="border p-2 rounded"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+      <form onSubmit={handleSignup} className="flex flex-col gap-4">
+        <input
+          type="email"
+          placeholder="Email"
+          className="border p-2 rounded"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-      <input
-        type="password"
-        placeholder="Password"
-        className="border p-2 rounded"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+        <input
+          type="password"
+          placeholder="Password"
+          className="border p-2 rounded"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-      {error && <p className="text-red-500">{error}</p>}
+        {error && <p className="text-red-500">{error}</p>}
 
-      <button className="bg-black text-white p-2 rounded">
-        Create Account
-      </button>
-    </form>
+        <button className="bg-black text-white p-2 rounded">
+          Create Account
+        </button>
+      </form>
 
-    {/* 🔥 Login link */}
-    <p className="text-sm text-gray-600 mt-4">
-      Already have an account{" "}
-      <span
-        onClick={() => (window.location.href = "/login")}
-        className="text-blue-600 cursor-pointer hover:underline"
-      >
-        Login
-      </span>
-    </p>
-  </div>
-)
+      {/* 🔥 Login link */}
+      <p className="text-sm text-gray-600 mt-4">
+        Already have an account{" "}
+        <span
+          onClick={() => (window.location.href = "/login")}
+          className="text-blue-600 cursor-pointer hover:underline"
+        >
+          Login
+        </span>
+      </p>
+    </div>
+  )
 
 }

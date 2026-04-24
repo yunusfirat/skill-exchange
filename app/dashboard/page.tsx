@@ -25,7 +25,7 @@ export default function DashboardPage() {
 
       setEmail(user.email ?? "")
 
-      const { data: existingProfile } = await supabase
+      let { data: existingProfile } = await supabase
         .from("users")
         .select("*")
         .eq("id", user.id)
@@ -38,15 +38,24 @@ export default function DashboardPage() {
             id: user.id,
             full_name: "",
             bio: "",
+            avatar_url: "",
+            username: "",
+            location: "",
+            timezone: "",
+            experience_level: "",
+            availability: "",
+            languages: "",
+            city: "",
+            country: "",
+            lat: null,
+            lng: null,
             skills_offered: "",
             skills_wanted: "",
           })
           .select()
           .single()
 
-        setProfile(newProfile)
-        setLoading(false)
-        return
+        existingProfile = newProfile
       }
 
       setProfile(existingProfile)
@@ -59,19 +68,18 @@ export default function DashboardPage() {
   if (loading) return <div className="p-10">Loading...</div>
 
   const completion =
-    (profile.full_name ? 25 : 0) +
-    (profile.bio ? 25 : 0) +
-    (profile.skills_offered ? 25 : 0) +
-    (profile.skills_wanted ? 25 : 0)
+    (profile?.full_name ? 25 : 0) +
+    (profile?.bio ? 25 : 0) +
+    (profile?.skills_offered ? 25 : 0) +
+    (profile?.skills_wanted ? 25 : 0)
 
   return (
     <div className="p-10 max-w-3xl mx-auto space-y-10">
 
       {/* Welcome Card */}
       <div className="bg-white shadow rounded-xl p-6 flex items-center gap-6">
-        {/* <div className="w-16 h-16 rounded-full bg-gray-200" /> */}
         <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 border border-gray-300 shadow-sm relative">
-          {profile.avatar_url ? (
+          {profile?.avatar_url ? (
             <Image
               src={profile.avatar_url}
               alt="Avatar"
@@ -88,7 +96,7 @@ export default function DashboardPage() {
 
         <div>
           <h1 className="text-2xl font-bold">
-            Welcome, {profile.full_name || "New User"} 👋
+            Welcome, {profile?.full_name || "New User"} 👋
           </h1>
           <p className="text-gray-600">{email}</p>
         </div>
@@ -120,14 +128,14 @@ export default function DashboardPage() {
         <div className="mb-4">
           <h3 className="font-medium">Skills Offered</h3>
           <p className="text-gray-600">
-            {profile.skills_offered || "Not set"}
+            {profile?.skills_offered || "Not set"}
           </p>
         </div>
 
         <div>
           <h3 className="font-medium">Skills Wanted</h3>
           <p className="text-gray-600">
-            {profile.skills_wanted || "Not set"}
+            {profile?.skills_wanted || "Not set"}
           </p>
         </div>
       </div>

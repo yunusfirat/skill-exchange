@@ -26,7 +26,7 @@ export default function ExplorePage() {
                 .eq("user_id", user.id)
                 .order("created_at", { ascending: false })
                 .limit(1)
-                .single();
+                .maybeSingle();
 
             if (!myReq) {
                 setMatches([]);
@@ -56,17 +56,16 @@ export default function ExplorePage() {
                 const theirLearn = req.skills_wanted.trim().toLowerCase();
 
                 const isMatch = myTeach === theirLearn && myLearn === theirTeach;
-
                 if (!isMatch) continue;
 
                 // 3) Fetch profile
                 let { data: profile } = await supabase
                     .from("users")
-                    .select("full_name, bio, avatar_url")
+                    .select("*")
                     .eq("id", req.user_id)
-                    .single();
+                    .maybeSingle();
 
-                // 4) Auto-create profile if missing
+                // 4) Auto-create profile if missing (FULL COLUMN SET)
                 if (!profile) {
                     const { data: newProfile } = await supabase
                         .from("users")
@@ -75,21 +74,48 @@ export default function ExplorePage() {
                             full_name: "",
                             bio: "",
                             avatar_url: "",
+                            username: "",
+                            location: "",
+                            timezone: "",
+                            experience_level: "",
+                            availability: "",
+                            languages: "",
+                            city: "",
+                            country: "",
+                            lat: null,
+                            lng: null,
+                            skills_offered: "",
+                            skills_wanted: "",
                         })
                         .select()
-                        .single();
+                        .maybeSingle();
 
-                    profile = newProfile
+                    profile = newProfile;
                 }
 
                 finalMatches.push({
                     ...req,
-                    full_name: profile?.full_name || "Unnamed User",
-                    bio: profile?.bio || "No bio yet.",
-                    avatar_url: profile?.avatar_url || `https://api.dicebear.com/7.x/thumbs/svg?seed=${req.user_id}`
-                      
+                    full_name: profile.full_name || "Unnamed User",
+                    bio: profile.bio || "No bio yet.",
+                    avatar_url:
+                        profile.avatar_url ||
+                        `https://api.dicebear.com/7.x/thumbs/svg?seed=${req.user_id}`,
                 });
             }
+
+            console.log("myTeach/myLearn:", myTeach, myLearn);
+console.log("others count:", others?.length);
+
+console.log(
+  "MATCH DEBUG",
+  others?.map((req: any) => ({
+    id: req.id,
+    user_id: req.user_id,
+    theirTeach: req.skills_offered.trim().toLowerCase(),
+    theirLearn: req.skills_wanted.trim().toLowerCase(),
+  }))
+);
+console.log("finalMatches:", finalMatches.length);
 
             setMatches(finalMatches);
             setLoading(false);

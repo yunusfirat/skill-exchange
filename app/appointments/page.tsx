@@ -117,7 +117,7 @@ export default function AppointmentsPage() {
 
         const scheduledAt = `${selectedDate}T${selectedTime}:00`
 
-        // 2) Daily.co'dan video odası oluştur
+        // 2) create video room
         const videoRes = await fetch("/api/create-video-room", {
             method: "POST",
         })
@@ -129,7 +129,7 @@ export default function AppointmentsPage() {
 
         const { url: videoUrl } = await videoRes.json()
 
-        // 3) Appointment kaydı oluştur
+        // 3) create appointment in DB
         const { error } = await supabase.from("appointments").insert({
             user1_id: user.id,
             user2_id: selectedUser.id,

@@ -52,7 +52,7 @@ export default function SkillRequestPage() {
                 skills_wanted: skillsWanted,
             })
             .select()
-            .single()
+            .maybeSingle();
 
         if (error) {
             console.error(error)
