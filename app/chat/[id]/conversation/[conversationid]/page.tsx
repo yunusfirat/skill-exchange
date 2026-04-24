@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import { supabase } from "../../../../lib/supabaseClient"
+import { supabase } from "../../../../../lib/supabaseClient"
 import { useParams } from "next/navigation"
 
 type Message = {
