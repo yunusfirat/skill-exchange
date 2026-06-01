@@ -8,11 +8,10 @@ interface UserCardProps {
 }
 
 export default function UserCard({ match }: UserCardProps) {
-  console.log(match.distance);
-return (
-  <div
-    onClick={() => window.location.href = `/profile/${match.user_id}`}
-    className="
+  return (
+    <div
+      onClick={() => window.location.href = `/profile/${match.user_id}`}
+      className="
       relative
       bg-white 
       rounded-2xl 
@@ -27,7 +26,7 @@ return (
       hover:-translate-y-1
       cursor-pointer
     "
-  >
+    >
 
 
       {/* TOP SECTION — LEFT + RIGHT */}
@@ -42,6 +41,7 @@ return (
               fill
               sizes="64px"
               className="object-cover"
+              unoptimized
             />
           </div>
 
@@ -231,62 +231,60 @@ return (
             {match.bio}
           </div>
         </div>
-
-    {/* BOTTOM‑RIGHT DISTANCE BADGE — DOĞRU YER */}
-    {typeof match.distance === "number" && (
-      <div
-        className="
-          absolute
-          bottom-3
-          right-3
-          bg-white/80
-          backdrop-blur-md
-          text-gray-900
-          text-xs
-          px-3
-          py-1.5
-          rounded-full
-          border
-          border-gray-300
-          shadow-sm
-        "
-      >
-        📍 {match.distance} km away
-      </div>
-    )}
       </div>
 
-      {/* BUTTON — ALWAYS AT BOTTOM */}
-      <button
-        onClick={async (e) => {
-          e.stopPropagation();
+      <div className="flex items-center justify-between mt-2">
+        <button
+          onClick={async (e) => {
+            e.stopPropagation();
 
-          const {
-            data: { user },
-          } = await supabase.auth.getUser();
+            const {
+              data: { user },
+            } = await supabase.auth.getUser();
 
-          if (!user) return;
+            if (!user) return;
 
-          const conversationId = await getOrCreateConversation(
-            user.id,
-            match.user_id
-          );
+            const conversationId = await getOrCreateConversation(
+              user.id,
+              match.user_id
+            );
 
-          window.location.href = `/chat/${conversationId}`;
-        }}
-        className="
-        w-full 
-        py-2.5 
-        bg-indigo-600 
-        text-white 
-        rounded-xl 
-        font-medium 
-        hover:bg-indigo-700 
-        transition
+            window.location.href = `/chat/${conversationId}`;
+          }}
+          className="
+      px-4
+      py-1.5
+      text-sm
+      bg-indigo-600
+      text-white
+      rounded-lg
+      font-medium
+      hover:bg-indigo-700
+      transition
+    "
+        >
+          Start Chat
+        </button>
+
+        {typeof match.distance === "number" && (
+          <div
+            className="
+        text-gray-600
+        text-sm
+        bg-gray-100
+        px-3
+        py-1
+        rounded-full
+        border
+        border-gray-200
       "
-      >
-        Start Chat
-      </button>
+          >
+            📍 {match.distance} km away
+          </div>
+        )}
+      </div>
+
+
     </div>
   );
 

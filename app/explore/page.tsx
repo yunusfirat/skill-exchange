@@ -98,7 +98,6 @@ export default function ExplorePage() {
         langs.forEach((l) => langSet.add(l));
 
         let distance: number | undefined = undefined;
-        console.log("PROFILE COORDS:", profile.lat, profile.lng);
 
      if (
   myCoords.lat != null &&
@@ -107,7 +106,7 @@ export default function ExplorePage() {
   profile.lng != null
 ) {
   distance = calcDistance(myCoords.lat, myCoords.lng, profile.lat, profile.lng);
-}console.log("DIST:", distance);
+}
 
         finalMatches.push({
           ...req,
@@ -126,7 +125,7 @@ export default function ExplorePage() {
         });
       }
       
-console.log(finalMatches[0].distance,'distance');
+
       setSkillOfferedOptions(Array.from(offeredSet).sort());
       setSkillWantedOptions(Array.from(wantedSet).sort());
       setLanguageOptions(Array.from(langSet).sort());

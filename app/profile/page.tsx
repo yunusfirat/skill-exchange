@@ -126,7 +126,6 @@ export default function ProfilePage() {
     lat: null,
     lng: null,
   })
-  console.log("PROFILE PAGE RENDER");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [authUser, setAuthUser] = useState<any>(null)
 

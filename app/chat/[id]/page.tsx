@@ -98,9 +98,7 @@ export default function ChatPage() {
 
     // 🔥 REALTIME LISTENER
     useEffect(() => {
-        if (messageChannelRef.current) return  // ❗ ikinci kez açmayı engeller
-
-        console.log("🟦 Listener created for:", conversationId)
+        if (messageChannelRef.current) return  
 
         const channel = supabase
             .channel(`conversation_${conversationId}`)
@@ -113,7 +111,6 @@ export default function ChatPage() {
                     filter: `conversation_id=eq.${conversationId}`,
                 },
                 (payload) => {
-                    console.log("🔥 REALTIME EVENT:", payload)
                     const newMsg = payload.new as Message
                     setMessages((prev) => [...prev, newMsg])
                 }
